@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travel Details - Travel Booking</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .card-glass {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 30px;
+            color: white;
+        }
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 25px;
+            padding: 10px 25px;
+            font-weight: 600;
+        }
+        .btn-success {
+            background: linear-gradient(45deg, #56ab2f, #a8e6cf);
+            border: none;
+            border-radius: 25px;
+            color: #333;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-5">
+        <div class="card-glass">
+            <h3 class="mb-3">
+                {% if travel.type == 'flight' %}
+                    ✈️ Flight
+                {% elif travel.type == 'train' %}
+                    🚆 Train
+                {% else %}
+                    🚌 Bus
+                {% endif %}
+                : {{ travel.source }} → {{ travel.destination }}
+            </h3>
+
+            <p><i class="fas fa-calendar"></i> {{ travel.date|date:"M d, Y" }}</p>
+            <p><i class="fas fa-clock"></i> {{ travel.time|time:"g:i A" }}</p>
+            <p><i class="fas fa-money-bill-wave"></i> ₹{{ travel.price }} per seat</p>
+            <p><i class="fas fa-chair"></i> {{ travel.available_seats }} seats available</p>
+
+            <div class="d-flex gap-3">
+                {% if travel.is_available %}
+                    <a href="{% url 'booking:book_travel' travel.id %}" class="btn btn-success">
+                        <i class="fas fa-ticket-alt"></i> Book Now
+                    </a>
+                {% else %}
+                    <button class="btn btn-secondary" disabled>
+                        <i class="fas fa-times"></i> Not Available
+                    </button>
+                {% endif %}
+                <a href="{% url 'booking:travel_list' %}" class="btn btn-outline-light">← Back to List</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

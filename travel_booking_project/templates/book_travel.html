@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Travel - Travel Booking</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .card-glass {
+            backdrop-filter: blur(15px);
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 20px;
+            padding: 40px;
+            color: white;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            transition: all 0.3s ease;
+        }
+        .travel-summary {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .travel-icon {
+            font-size: 2rem;
+            margin-right: 15px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        .route-display {
+            font-size: 1.3rem;
+            font-weight: bold;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        .route-arrow {
+            color: #ffd700;
+            margin: 0 15px;
+        }
+        .price-highlight {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #90EE90;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        .form-control, .form-select {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            border-radius: 12px;
+            padding: 12px 15px;
+            transition: all 0.3s ease;
+        }
+        .form-control:focus, .form-select:focus {
+            background: rgba(255, 255, 255, 0.25);
+            border-color: #ffd700;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+            color: white;
+        }
+        .form-control::placeholder { 
+            color: rgba(255,255,255,0.7); 
+        }
+        .form-select option {
+            background: #4a5568;
+            color: white;
+        }
+        .form-label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #f8f9fa;
+        }
+        .btn-success {
+            background: linear-gradient(45deg, #56ab2f, #a8e6cf);
+            border: none;
+            border-radius: 25px;
+            color: #333;
+            font-weight: 600;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .btn-success:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(86, 171, 47, 0.4);
+            color: #333;
+        }
+        .btn-outline-light {
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 25px;
+            padding: 15px 30px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .btn-outline-light:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: white;
+            color: white;
+        }
+        .passenger-section {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        .passenger-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .total-price {
+            background: rgba(255, 215, 0, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            margin: 20px 0;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+        .alert-info {
+            background: rgba(23, 162, 184, 0.2);
+            border: 1px solid rgba(23, 162, 184, 0.3);
+            color: #b8f4ff;
+        }
+        .seats-counter {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            justify-content: center;
+            margin: 15px 0;
+        }
+        .seats-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .seats-btn:hover {
+            background: rgba(255, 215, 0, 0.3);
+            transform: scale(1.1);
+        }
+        .seats-display {
+            font-size: 1.5rem;
+            font-weight: bold;
+            min-width: 60px;
+            text-align: center;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card-glass">
+                    <!-- Travel Summary -->
+                    <div class="travel-summary">
+                        <div class="d-flex align-items-center mb-3">
+                            <span class="travel-icon">
+                                {% if travel.type == 'flight' %}
+                                    ✈️
+                                {% elif travel.type == 'train' %}
+                                    🚆
+                                {% else %}
+                                    🚌
+                                {% endif %}
+                            </span>
+                            <div>
+                                <h3 class="mb-1">Book Your {{ travel.get_type_display }}</h3>
+                                <div class="route-display">
+                                    {{ travel.source }}
+                                    <span class="route-arrow">→</span>
+                                    {{ travel.destination }}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-4">
+                                <i class="fas fa-calendar-alt me-2"></i>
+                                <strong>{{ travel.date|date:"M d, Y" }}</strong>
+                            </div>
+                            <div class="col-md-4">
+                                <i class="fas fa-clock me-2"></i>
+                                <strong>{{ travel.time|time:"g:i A" }}</strong>
+                            </div>
+                            <div class="col-md-4">
+                                <i class="fas fa-chair me-2"></i>
+                                <strong>{{ travel.available_seats }} seats left</strong>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-3">
+                            <i class="fas fa-money-bill-wave me-2"></i>
+                            <span class="price-highlight">₹{{ travel.price }}</span> per seat
+                        </div>
+                    </div>
+
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <!-- Booking Form -->
+                    <form method="post" id="bookingForm">
+                        {% csrf_token %}
+                        
+                        <div class="passenger-section">
+                            <h5 class="mb-3">
+                                <i class="fas fa-users me-2"></i>
+                                Booking Details
+                            </h5>
+                            
+                            <!-- Number of Seats Selection -->
+                            <div class="mb-4">
+                                <label class="form-label">Number of Seats</label>
+                                <div class="seats-counter">
+                                    <button type="button" class="seats-btn" id="decreaseBtn">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    <div class="seats-display" id="seatsDisplay">1</div>
+                                    <button type="button" class="seats-btn" id="increaseBtn">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                                <input type="hidden" name="number_of_seats" id="numberOfSeats" value="1">
+                                <small class="text-muted">Maximum {{ travel.available_seats }} seats available</small>
+                            </div>
+
+                            <!-- Simple passenger info -->
+                            <div class="mb-3">
+                                <label class="form-label">Primary Passenger Name</label>
+                                <input type="text" class="form-control" name="passenger_name" 
+                                       placeholder="Enter passenger name" required>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Contact Number</label>
+                                    <input type="tel" class="form-control" name="contact_number" 
+                                           placeholder="Enter contact number" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" class="form-control" name="email" 
+                                           placeholder="Enter email address" required>
+                                </div>
+                            </div>
+
+                            <!-- Dynamic Passenger Forms -->
+                            <div id="passengerForms">
+                                <div class="passenger-card">
+                                    <h6 class="mb-3">Passenger 1</h6>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Full Name</label>
+                                            <input type="text" class="form-control" name="passenger_1_name" 
+                                                   placeholder="Enter full name" required>
+                                        </div>
+                                        <div class="col-md-3 mb-3">
+                                            <label class="form-label">Age</label>
+                                            <input type="number" class="form-control" name="passenger_1_age" 
+                                                   placeholder="Age" min="1" max="120" required>
+                                        </div>
+                                        <div class="col-md-3 mb-3">
+                                            <label class="form-label">Gender</label>
+                                            <select class="form-select" name="passenger_1_gender" required>
+                                                <option value="">Select</option>
+                                                <option value="Male">Male</option>
+                                                <option value="Female">Female</option>
+                                                <option value="Other">Other</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Total Price Display -->
+                        <div class="total-price pulse-animation">
+                            <h5 class="mb-2">
+                                <i class="fas fa-calculator me-2"></i>
+                                Total Amount
+                            </h5>
+                            <div class="h3" id="totalPrice">₹{{ travel.price }}</div>
+                            <small class="text-muted">
+                                <span id="seatsCount">1</span> seat(s) × ₹{{ travel.price }} = 
+                                <span id="finalAmount">₹{{ travel.price }}</span>
+                            </small>
+                        </div>
+
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Please ensure all passenger details are accurate as per government ID.
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="d-flex gap-3 justify-content-center flex-wrap">
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-check-circle"></i> Confirm Booking
+                            </button>
+                            {% if travel.id %}
+                                <a href="{% url 'booking:travel_detail' travel.id %}" class="btn btn-outline-light">
+                                    <i class="fas fa-arrow-left"></i> Back to Details
+                                </a>
+                            {% else %}
+                                <a href="{% url 'booking:travel_list' %}" class="btn btn-outline-light">
+                                    <i class="fas fa-arrow-left"></i> Back to List
+                                </a>
+                            {% endif %}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let currentSeats = 1;
+        const maxSeats = {{ travel.available_seats }};
+        const seatPrice = {{ travel.price }};
+
+        // Add event listeners
+        document.getElementById('decreaseBtn').addEventListener('click', function() {
+            updateSeats(-1);
+        });
+        
+        document.getElementById('increaseBtn').addEventListener('click', function() {
+            updateSeats(1);
+        });
+
+        function updateSeats(change) {
+            const newSeats = currentSeats + change;
+            
+            if (newSeats >= 1 && newSeats <= maxSeats) {
+                currentSeats = newSeats;
+                document.getElementById('seatsDisplay').textContent = currentSeats;
+                document.getElementById('numberOfSeats').value = currentSeats;
+                document.getElementById('seatsCount').textContent = currentSeats;
+                
+                const totalPrice = currentSeats * seatPrice;
+                document.getElementById('totalPrice').textContent = `₹${totalPrice}`;
+                document.getElementById('finalAmount').textContent = `₹${totalPrice}`;
+            }
+        }
+
+        // Form validation
+        document.getElementById('bookingForm').addEventListener('submit', function(e) {
+            const requiredFields = this.querySelectorAll('[required]');
+            let valid = true;
+            
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    field.style.borderColor = '#dc3545';
+                    valid = false;
+                } else {
+                    field.style.borderColor = '';
+                }
+            });
+            
+            if (!valid) {
+                e.preventDefault();
+                alert('Please fill in all required fields.');
+            }
+        });
+    </script>
+</body>
+</html>

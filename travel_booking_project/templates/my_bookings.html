@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Bookings - Travel Management</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .header h1 {
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+        
+        .messages {
+            margin-bottom: 20px;
+        }
+        
+        .alert {
+            padding: 15px 20px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            border-left: 4px solid;
+        }
+        
+        .alert-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border-left-color: #dc3545;
+        }
+        
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border-left-color: #28a745;
+        }
+        
+        .bookings-grid {
+            display: grid;
+            gap: 25px;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        }
+        
+        .booking-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .booking-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+        
+        .booking-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .booking-id {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #4facfe;
+        }
+        
+        .status {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .status-confirmed {
+            background: linear-gradient(135deg, #4caf50, #8bc34a);
+            color: white;
+        }
+        
+        .status-cancelled {
+            background: linear-gradient(135deg, #f44336, #ff9800);
+            color: white;
+        }
+        
+        .status-pending {
+            background: linear-gradient(135deg, #ff9800, #ffc107);
+            color: white;
+        }
+        
+        .travel-info {
+            margin-bottom: 20px;
+        }
+        
+        .travel-route {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .travel-type-icon {
+            font-size: 1.5em;
+        }
+        
+        .travel-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+        
+        .detail-item {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 8px;
+        }
+        
+        .detail-label {
+            font-size: 0.85em;
+            color: #666;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .detail-value {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .passenger-info {
+            background: linear-gradient(135deg, #e3f2fd, #f3e5f5);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .passenger-info h4 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .passenger-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+        
+        .booking-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            font-size: 0.9em;
+        }
+        
+        .btn-cancel {
+            background: linear-gradient(135deg, #ff4757, #ff3838);
+            color: white;
+        }
+        
+        .btn-cancel:hover {
+            background: linear-gradient(135deg, #ff3838, #ff2f2f);
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .empty-state h3 {
+            color: #666;
+            font-size: 1.5em;
+            margin-bottom: 15px;
+        }
+        
+        .empty-state p {
+            color: #999;
+            margin-bottom: 25px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px 30px;
+            font-size: 1.1em;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #764ba2, #667eea);
+            transform: translateY(-2px);
+        }
+        
+        .navigation {
+            margin-bottom: 20px;
+        }
+        
+        .nav-link {
+            display: inline-block;
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            margin-right: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 10px;
+            }
+            
+            .bookings-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .travel-details {
+                grid-template-columns: 1fr;
+            }
+            
+            .passenger-details {
+                grid-template-columns: 1fr;
+            }
+            
+            .booking-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Navigation -->
+        <div class="navigation">
+            <a href="{% url 'travel:travel_list' %}" class="nav-link">🏠 Browse Travels</a>
+            <a href="{% url 'travel:travel_search' %}" class="nav-link">🔍 Search</a>
+        </div>
+        
+        <!-- Header -->
+        <div class="header">
+            <h1>📋 My Bookings</h1>
+            <p>Manage your travel bookings</p>
+        </div>
+        
+        <!-- Messages -->
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        
+        <!-- Bookings -->
+        {% if bookings %}
+            <div class="bookings-grid">
+                {% for booking in bookings %}
+                    <div class="booking-card">
+                        <!-- Booking Header -->
+                        <div class="booking-header">
+                            <div class="booking-id">{{ booking.booking_id }}</div>
+                            <div class="status status-{{ booking.status }}">{{ booking.get_status_display }}</div>
+                        </div>
+                        
+                        <!-- Travel Info -->
+                        <div class="travel-info">
+                            <div class="travel-route">
+                                <span class="travel-type-icon">
+                                    {% if booking.travel_option.type == 'flight' %}✈️
+                                    {% elif booking.travel_option.type == 'train' %}🚆
+                                    {% elif booking.travel_option.type == 'bus' %}🚌
+                                    {% endif %}
+                                </span>
+                                {{ booking.travel_option.source }} → {{ booking.travel_option.destination }}
+                            </div>
+                            
+                            <div class="travel-details">
+                                <div class="detail-item">
+                                    <div class="detail-label">Travel Date</div>
+                                    <div class="detail-value">{{ booking.travel_option.date|date:"M d, Y" }}</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Time</div>
+                                    <div class="detail-value">{{ booking.travel_option.time|time:"g:i A" }}</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Seats</div>
+                                    <div class="detail-value">{{ booking.number_of_seats }}</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Total Amount</div>
+                                    <div class="detail-value">₹{{ booking.total_price }}</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Booked On</div>
+                                    <div class="detail-value">{{ booking.booking_date|date:"M d, Y" }}</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Travel Type</div>
+                                    <div class="detail-value">{{ booking.travel_option.get_type_display }}</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Passenger Information -->
+                        {% if booking.passenger_details %}
+                            <div class="passenger-info">
+                                <h4>👤 Passenger Information</h4>
+                                {% for passenger in booking.passenger_details %}
+                                    <div class="passenger-details">
+                                        {% if passenger.name %}
+                                            <div>
+                                                <strong>Name:</strong> {{ passenger.name }}
+                                            </div>
+                                        {% endif %}
+                                        {% if passenger.contact %}
+                                            <div>
+                                                <strong>Contact:</strong> {{ passenger.contact }}
+                                            </div>
+                                        {% endif %}
+                                        {% if passenger.email %}
+                                            <div>
+                                                <strong>Email:</strong> {{ passenger.email }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    {% if not forloop.last %}<hr style="margin: 10px 0;">{% endif %}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        
+                        <!-- Actions -->
+                        <div class="booking-actions">
+                            {% if booking.status == 'confirmed' %}
+                                <form method="post" action="{% url 'travel:cancel_booking' booking.pk %}" 
+                                      onsubmit="return confirm('Are you sure you want to cancel this booking?');" style="display: inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-cancel">❌ Cancel Booking</button>
+                                </form>
+                            {% endif %}
+                            <a href="{% url 'travel:travel_detail' booking.travel_option.pk %}" class="btn btn-secondary">
+                                📄 View Travel Details
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <!-- Empty State -->
+            <div class="empty-state">
+                <h3>🎫 No Bookings Found</h3>
+                <p>You haven't made any bookings yet. Start exploring our travel options!</p>
+                <a href="{% url 'travel:travel_list' %}" class="btn btn-primary">
+                    🚀 Browse Travels
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>

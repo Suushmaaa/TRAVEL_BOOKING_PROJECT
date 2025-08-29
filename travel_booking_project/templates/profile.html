@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - Travel Booking</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .navbar {
+            background: rgba(255, 255, 255, 0.1) !important;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .navbar-brand, .nav-link {
+            color: white !important;
+            font-weight: 500;
+        }
+        .nav-link:hover {
+            color: #667eea !important;
+            transition: all 0.3s ease;
+        }
+        .profile-card {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem auto;
+            max-width: 800px;
+        }
+        .info-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .btn-outline-light {
+            border-radius: 25px;
+            padding: 10px 20px;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+        }
+        .btn-outline-light:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .btn-danger {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            border: none;
+            border-radius: 25px;
+            padding: 10px 20px;
+            transition: all 0.3s ease;
+        }
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        .text-white {
+            color: white !important;
+        }
+        .text-white-50 {
+            color: rgba(255, 255, 255, 0.5) !important;
+        }
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+            margin: 0 auto 1rem auto;
+        }
+        .alert {
+            border-radius: 15px;
+            border: none;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#">
+                ✈️ TravelBooking
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Destinations</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'accounts:profile' %}">Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'accounts:logout' %}">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Messages -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="profile-card">
+            <div class="text-center mb-4">
+                <div class="profile-avatar">
+                    {{ user.username|first|upper }}
+                </div>
+                <h2 class="text-white mb-2">Welcome, {{ user.username }}!</h2>
+                <p class="text-white-50">Manage your account and travel preferences</p>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="info-card">
+                        <h5 class="text-white mb-3">📋 Account Information</h5>
+                        <p class="text-white-50 mb-2">
+                            <strong>Username:</strong> {{ user.username }}
+                        </p>
+                        <p class="text-white-50 mb-2">
+                            <strong>Email:</strong> {{ user.email|default:"Not provided" }}
+                        </p>
+                        <p class="text-white-50 mb-2">
+                            <strong>Date Joined:</strong> {{ user.date_joined|date:"F d, Y" }}
+                        </p>
+                        <p class="text-white-50 mb-0">
+                            <strong>Last Login:</strong> {{ user.last_login|date:"F d, Y g:i A"|default:"Never" }}
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="info-card">
+                        <h5 class="text-white mb-3">🎯 Quick Actions</h5>
+                        <div class="d-grid gap-2">
+                            <a href="#" class="btn btn-outline-light">
+                                🌍 Browse Destinations
+                            </a>
+                            <a href="#" class="btn btn-outline-light">
+                                📋 My Bookings
+                            </a>
+                            <a href="#" class="btn btn-outline-light">
+                                ⚙️ Account Settings
+                            </a>
+                            <hr style="border-color: rgba(255,255,255,0.2);">
+                            <a href="{% url 'accounts:logout' %}" class="btn btn-danger">
+                                🚪 Logout
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="info-card">
+                        <h5 class="text-white mb-3">📊 Account Statistics</h5>
+                        <div class="row text-center">
+                            <div class="col-md-4">
+                                <div class="text-white">
+                                    <h3>0</h3>
+                                    <p class="text-white-50 mb-0">Total Bookings</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="text-white">
+                                    <h3>0</h3>
+                                    <p class="text-white-50 mb-0">Countries Visited</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="text-white">
+                                    <h3>0</h3>
+                                    <p class="text-white-50 mb-0">Reviews Written</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

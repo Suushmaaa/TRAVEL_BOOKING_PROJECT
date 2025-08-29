@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><title>Search Travel</title></head>
+<body>
+  <h1>Search Travel Options</h1>
+
+  <form method="get" action="{% url 'travel:travel_search' %}">
+    <input type="text" name="q" value="{{ q }}" placeholder="city, route, or type (Bus/Train/Flight)">
+    <input type="date" name="date" value="{{ date }}">
+    <button type="submit">Search</button>
+    <a href="{% url 'travel:travel_list' %}">All options</a>
+  </form>
+
+  <hr>
+
+  {% if results %}
+    <ul>
+      {% for t in results %}
+        <li>
+          {{ t.travel_type }}: {{ t.source }} → {{ t.destination }}
+          on {{ t.date_time }} — ₹{{ t.price }}
+          <a href="{% url 'travel:travel_detail' t.id %}">View</a>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No matching trips found.</p>
+  {% endif %}
+</body>
+</html>
